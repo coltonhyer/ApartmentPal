@@ -73,20 +73,21 @@ function renewPass(){
     //calls passBuilder with the new information
 }
 
+function deletePass(passType){
+    //takes the passType and deletes the pass of that type associated with the current user
+}
+
 
 //API methods
-GET /passes/resident
-GET /passes/visitors
-GET /passes/resident/:id
-GET /passes/visitor/:id
+GET /logins?username=username&password=password
+GET /passes?plate=plate
+GET /passes/:type/:id
 
-POST /passes/visitor
-POST /passes/resident
+POST /passes/:type
 
 PUT /passes/resident
 
-DELETE /passes/resident/:id
-DELETE /passes/visitor/:id
+DELETE /passes/:type/:id
 
 //DB Schema
 let logins = {
@@ -116,3 +117,6 @@ let passes = {
     vehicleYear: String,
     residentID: String
 }
+
+dbUn = "DBUser"
+dbPw = "rsOe3zE37DzffIY5"
