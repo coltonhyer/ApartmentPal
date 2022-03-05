@@ -142,9 +142,9 @@ app.post('/passes', async (req, res) => {
 
 app.put('/passes/resident/:id',async (req, res) => {
     try{
-        let pass = await passModel.findOne({residentID: ObjectId(req.params.id)})
+        let pass = await passModel.findOne({residentID: ObjectId(req.params.id), passType: 'resident'})
         if (pass){
-            let updatedPass = await passModel.findOneAndUpdate({residentID: ObjectId(req.params.id)}, cleanPass(req.body))
+            let updatedPass = await passModel.findOneAndUpdate({residentID: ObjectId(req.params.id), passType: 'resident'}, cleanPass(req.body))
             res.status(200).send(updatedPass)
         }
         else{
