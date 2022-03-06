@@ -39,11 +39,4 @@ describe('API Test Cases', () =>{
     })
 })
 
-describe('is this a new suite?', () =>{
-    test('simple test', () =>{
-        expect(true).toBe(true)
-    })
-})
-
-
 
