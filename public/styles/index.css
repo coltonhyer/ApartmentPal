@@ -1,0 +1,49 @@
+html, body{
+    height:100% !important;
+    width:100%;
+    margin:0;
+    padding:0;
+}
+#app{
+    height:inherit;
+}
+
+.login{
+    height:100%;
+}
+
+#welcome{
+    height: 30%;
+    background-color: #4A5240;
+    display:flex;
+    margin:0;
+    align-items: center;
+    justify-content: center;
+}
+#welcome div{
+    font-size:100px;
+    font-family: sans-serif;
+    color:#a28497;
+}
+
+#loginMessage{
+    height:15%;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    background-color: #ADA8BE;
+}
+
+#loginMessage{
+    font-size: 30px;
+    font-family:sans-serif;
+}
+
+#loginForm{
+    display:flex;
+    flex-grow:1;
+    height:55%;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
