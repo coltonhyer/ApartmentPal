@@ -5,20 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
     <title>Apartment Pal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css" integrity="sha512-Zw6ER2h5+Zjtrej6afEKgS8G5kehmDAHYp9M2xf38MPmpUWX39VrYmdGtCrDQbdLQrTnBVT8/gcNhgS4XPgvEg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./styles/index.css" />
 </head>
 <body>
     <div id="app">
-        <router-view></router-view>
+        <v-app>
+            <v-main>
+                <router-view></router-view>
+            </v-main>
+        </v-app>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.5.3/vue-router.min.js" integrity="sha512-/QcUyef9r0LQzC+WtTNs+gJNacB+x20p1ZaPKSldF9Vu3m+uOmz0bBpPpsmHncv1ehuOCwnMXYydvl1KkW7Xow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src= './components/login.js'></script>
+    <script src="./components/lookup.js"></script>
     <script>
         const routes = [
             {path: '/', component: Login},
-            {path: '/lookup',},
+            {path: '/lookup',component:Lookup},
             {path: '/result', },
             {path: '/resident', },
             {path:'/register',},
