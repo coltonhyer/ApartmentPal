@@ -27,7 +27,9 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
     "serve-favicon": "^2.5.0",
-    "sha.js": "^2.4.11"
+    "sha.js": "^2.4.11",
+    "vue": "^3.2.31",
+    "vuetify": "^2.6.4"
   },
   "devDependencies": {
     "jest": "^27.5.1"
