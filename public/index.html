@@ -24,12 +24,15 @@
     <script src= './components/login.js'></script>
     <script src="./components/lookup.js"></script>
     <script src="./components/passes.js"></script>
+    <script src="./components/passForm.js"></script>
     <script>
         const routes = [
             {path: '/', component: Login},
             {path: '/lookup',component:Lookup},
             {path: '/results', component: Results},
             {path: '/resident', component: PassHome},
+            {path:'/register', component: Form},
+            {path:'/renew', component:Form},
         ]
 
         const router = new VueRouter({
