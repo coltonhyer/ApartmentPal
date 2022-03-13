@@ -14,7 +14,7 @@ let loginModel, residentModel, passModel
 let login = {
     username: String,
     password: String,
-    rold: String,
+    role: String,
     residentID:mongoose.ObjectId
 },
 resident = {
@@ -63,7 +63,7 @@ app.use(helmet({
     contentSecurityPolicy: true
 }))
 app.use(logger('dev'))
-//app.use(express.static('public'))
+app.use(express.static('public'))
 //app.use(favicon())
 app.use(express.json())
 app.use(express.urlencoded())
@@ -73,13 +73,17 @@ app.get('/logins', async (req, res) => {
     try{
         let login = await loginModel.findOne({username: req.query.username, password: pwHash})
         if (login){
-            testID = login.residentID
-            let user = await residentModel.findOne({residentID: login.residentID})
+            let user = await residentModel.findOne({_id: ObjectId(login.residentID)})
             if (user){
-                res.status(200).send(user)
+                res.status(200).send({role:login.role, user})
             }
             else{
-                res.status(500).send('User not found')
+                if (login.role === 'admin'){
+                    res.status(200).send({role:login.role})
+                }
+                else{
+                    res.status(500).send('resident info not found')
+                }
             }
         }
         else{
