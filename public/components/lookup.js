@@ -25,15 +25,14 @@ const Lookup = Vue.component('lookup', {
     },
     methods:{
         submit: async function(){
-            let passInfo
             this.$refs.form.validate()
             if (this.$refs.form.value){
                 await axios.get(`/passes?plate=${this.licensePlate}`)
                 .then(res =>{
-                    passInfo = res.data
+                    this.$root.passInfo = res.data //change this to be an event
                 }).catch(() =>{})
                 this.$refs.form.reset()
-                this.$root.$router.push({path:'/results', params:{passInfo}})
+                this.$root.$router.push('/results')
             }
         }
     }
@@ -47,20 +46,87 @@ const Results = Vue.component('results', {
                 <div> Attendant Hub </div>
             </v-container>
             <v-container id="resultsField">
-                <v-alert text outlined dense type="warning" elevation=2>Expired Pass</v-alert>
-                <v-card elevation=3>
-                    <v-card-title> Colton's Card </v-card-title>
-                    <v-card-text><strong>Name:</strong> Colton</v-card-text>
-                    <v-card-text><strong>License Plate:</strong> ABC123</v-card-text>
-                    <v-card-text><strong>Date of Birth:</strong> 01/01/2000</v-card-text>
-                    <v-card-text><strong>Address:</strong> 123 Fake St</v-card-text>
-                    <v-card-text><strong>City:</strong> Fakeville</v-card-text>
-                    <v-card-text><strong>State:</strong> Fake</v-card-text>
-                    <v-card-text><strong>Zip Code:</strong> 12345</v-card-text> 
+                <v-alert text outlined dense :type="!passInfo ? 'error' : expired ? 'warning' : 'success'" elevation=2>{{bannerMessage}}</v-alert>
+                <v-card v-if="!!passInfo" v-model="ready" elevation=3>
+                    <v-card-title> Pass Information </v-card-title>
+                    <v-card-text v-for="(item, value) in carInfo">
+                        <strong>{{value}}: </strong>{{item}}
+                    </v-card-text>
+                </v-card>
+                <v-card class="mt-5" v-if="!!passInfo" v-model="ready" elevation=3>
+                    <v-card-title> Resident Information </v-card-title>
+                    <v-card-text v-for="(item, value) in residentInfo">
+                        <strong>{{value}}: </strong>{{item}}
+                    </v-card-text>
                 </v-card>
             </v-container>
-            <v-btn bottom absolute right color="error">Print Ticket</v-btn>
+            <v-btn v-if="!passInfo || expired" bottom absolute right color="error">Print Ticket</v-btn>
         </div>
-    `
+    `,
+    data: function(){
+        return{
+            passInfo: null,
+            ready:false,
+            carInfo:{},
+            residentInfo:{},
+        }
+    },
+    computed: {
+        expired: function(){
+            if (this.passInfo){
+                let today = new Date()
+                let exp = new Date(this.passInfo.expiration)
+                return exp < today
+            }
+            return false
+        },
+        bannerMessage: function(){
+            if (this.passInfo){
+                let passType = this.passInfo.passType[0].toUpperCase() + this.passInfo.passType.slice(1)
+                if (this.expired){
+                    return `Expired ${passType} Pass`
+                }
+                return `Valid ${passType} Pass`
+            }
+            return 'No Pass Found'
+        }
+    },
+    mounted: async function(){
+        this.passInfo = this.$root.passInfo
+        if (this.passInfo){
+            await axios.get(`/resident/${this.passInfo.residentID}`)
+            .then(res =>{
+                this.passInfo = {...res.data, ...this.passInfo}
+                this._fillCard()
+            })
+        }
+        this.$root.passInfo = null
+    },
+
+    methods: {
+        _fillCard: function(){
+            console.log('I am filling the card')
+            let date = new Date(Date.parse(this.passInfo.expiration))
+            this.carInfo = {
+                "License Plate Number": this.passInfo.plateNum,
+                "Vehicle Color": this.passInfo.vehicleColor[0].toUpperCase() + this.passInfo.vehicleColor.slice(1),
+                "Vehicle Make": this.passInfo.vehicleMake[0].toUpperCase() + this.passInfo.vehicleMake.slice(1),
+                "Vehicle Model": this.passInfo.vehicleModel[0].toUpperCase() + this.passInfo.vehicleModel.slice(1),
+                "Vehicle Year": this.passInfo.vehicleYear,
+                "Expiration Date": `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`, 
+            }
+            this.residentInfo={
+                "Name": `${this.passInfo.firstName} ${this.passInfo.lastName}`,
+                "Apartment": this.passInfo.apartment,
+                "Building Number": this.passInfo.building,
+                "Email": this.passInfo.email,
+                "Phone": this.passInfo.phone,
+            }
+            this.ready=true
+        }
+    }
 })
 
+//TODO: Maybe create a random fact card that displays when there isn't a pass
+//TODO: add logic for print ticket button
+//TODO: Pretty print the phone number
