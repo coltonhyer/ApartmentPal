@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const shajs  = require('sha.js')
 
 const logger = require('morgan'),
-    helmet = require('helmet'),
     favicon = require('serve-favicon')
 const { ObjectId } = require('bson')
 
@@ -55,13 +54,7 @@ const server = app.listen(3000, async () => {
 
 })
 
-app.use(helmet({
-    crossOriginEmbedderPolicy: true,
-    crossOriginOpenerPolicy: true,
-    crossOriginResourcePolicy: true,
-    originAgentCluster: true,
-    contentSecurityPolicy: true
-}))
+
 app.use(logger('dev'))
 app.use(express.static('public'))
 //app.use(favicon())
