@@ -10,7 +10,7 @@ const Login = Vue.component('login', {
             <v-container id="loginContainer">
                 <v-form ref="form" id="loginForm">
                     <v-text-field @blur="reset" @input="reset" v-model="username" :rules="unRules" label="Username" :prepend-icon="'mdi-account'" required></v-text-field>
-                    <v-text-field @blur="reset" @input="reset" v-model="password" :rules="pwRules" label="Password" class="shrink" :prepend-icon="'mdi-lock'" :type="show1 ? 'text': 'password'" required></v-text-field>
+                    <v-text-field @blur="reset" @input="reset" v-model="password" :rules="pwRules" label="Password" class="shrink" :prepend-icon="'mdi-lock'" :type="show1 ? 'text': 'password'" :append-icon="show1 ? 'mdi-eye': 'mdi-eye-off'" @click:append="show1=!show1" required></v-text-field>
                     <v-btn color="primary" @click="submit">Accept</v-btn>
                 </v-form>
             </v-container>
