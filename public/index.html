@@ -36,7 +36,10 @@
 
         let app = new Vue({
             router, 
-            vuetify: new Vuetify()
+            vuetify: new Vuetify(),
+            data: {
+                passInfo: null
+            }
 
         }).$mount('#app')
     </script>
