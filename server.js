@@ -106,6 +106,22 @@ app.get('/passes', async (req, res) =>{
     }
 })
 
+app.get('/resident/:id', async(req, res) =>{
+    try{
+        let resident = await residentModel.findOne({_id: ObjectId(req.params.id)})
+        if (resident){
+            res.status(200).send(resident)
+        }
+        else{
+            res.status(404).send('Resident not found')
+        }
+    }
+    catch(err){
+        console.log('Error in getting resident: ')
+        console.error(err)
+    }
+})
+
 app.get('/passes/:type/:id', async(req, res) => {
     try{
         let pass = await passModel.findOne({residentID: ObjectId(req.params.id), passType: req.params.type})
