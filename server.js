@@ -51,7 +51,6 @@ const server = app.listen(3000, async () => {
     catch(err){
         console.error(`Failed to connect to database: `, err)
     }
-
 })
 
 

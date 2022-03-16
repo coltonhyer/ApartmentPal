@@ -105,7 +105,6 @@ const Results = Vue.component('results', {
 
     methods: {
         _fillCard: function(){
-            console.log('I am filling the card')
             let date = new Date(Date.parse(this.passInfo.expiration))
             this.carInfo = {
                 "License Plate Number": this.passInfo.plateNum,
