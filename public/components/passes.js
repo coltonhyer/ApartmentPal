@@ -60,15 +60,37 @@ const PassHome = Vue.component('pass-home', {
         </v-layout>
         <v-footer fixed dark height="50%">
             <v-layout v-if=activePass justify-end>
-                <v-btn color="error">Delete</v-btn>
-                <v-tooltip v-if=!selectedItem top>
+                <v-dialog v-model=deleteDialog width="28%">
                     <template v-slot:activator="{ on }">
-                        <div class="ml-1" v-on="on">
-                            <v-btn :disabled=!expiration color="success" @click="renewPass"> Renew </v-btn>
+                        <v-btn color="error" v-on="on">Delete</v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title class="text-h3">Delete Pass</v-card-title>
+                        <v-card-text class="text-h6"> Are you sure you want to delete this pass? </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="secondary" @click="deleteDialog = false">Cancel</v-btn>
+                            <v-btn color="error" @click="deletePass">Delete</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog width="50%" v-if=!selectedItem v-model=renewDialog>
+                    <template v-slot:activator="{ on }">
+                        <div class="ml-1">
+                            <v-btn color="success" v-on="on" > Renew </v-btn>
                         </div>
                     </template>
-                    <span>You can renew your pass starting 3 weeks before the expiration date</span>
-                </v-tooltip>
+                    <v-card>
+                        <v-card-title class="text-h3">Pass Renewal</v-card-title>
+                        <v-card-text class="text-h5">Thank you for renewing your parking pass with Apartment Pal!</v-card-text>
+                        <v-card-text>Would you like to register your pass with a new vehicle or keep the same vehicle information from your previous pass?</v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="success" @click="goToForm"> Register a new vehicle </v-btn>
+                            <v-btn color="primary" @click="renewPass"> Keep current vehicle info </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </v-layout>
         </v-footer>
     </div>
@@ -77,39 +99,45 @@ const PassHome = Vue.component('pass-home', {
         return{
             selectedItem:0,
             residentPass: null,
-            visitorPass: null
+            visitorPass: null,
+            activePass: null,
+            renewDialog: false,
+            deleteDialog: false
         }
     },
-    mounted: async function(){
-        await axios.get(`/passes/resident/${this.$root.residentID}`)
-        .then(res =>{
-            this.residentPass = res.data
-        }).catch()
-
-        await axios.get(`/passes/visitor/${this.$root.residentID}`)
-        .then(res =>{
-            this.visitorPass = res.data   
-        }).catch()
-    },
-    computed:{
-        activePass: function(){
-            return this.selectedItem ? this.buildPass(this.visitorPass) : this.buildPass(this.residentPass)
-        },
-        expiration: function(){
-            if(this.residentPass){
-                let today = new Date()
-                let exp = new Date(this.residentPass.expiration)
-                exp.setDate(exp.getDate() -21)
-                return today > exp
+    watch:{
+        selectedItem: function(val){
+            if (val){
+                this.activePass = this.buildPass(this.visitorPass)
             }
-            return false
+            else{
+                this.activePass = this.buildPass(this.residentPass)
+                this.expiration = this.findExpiration()
+            }
         }
+    },
+    mounted: function(){
+        this.getResidentPass()
+        this.getVisitorPass()
     },
     methods:{
-        renewPass: function(){
+        renewPass: async function(){
+            this.renewDialog=false
+            let newExp = new Date()
+            newExp.setFullYear(newExp.getFullYear() + 1)
+            newExp.setDate(31)
+            newExp.setMonth(6)
+            await axios.put(`/passes/resident/${this.$root.residentID}`, {expiration: newExp}).then(res => console.log(res)).catch(err => console.error(err))
+            this.residentPass = await axios.get(`/passes/resident/${this.$root.residentID}`).then(res => res.data).catch(err => console.error(err))
+            this.activePass = this.buildPass(this.residentPass) 
+        },
+        goToForm: function(){
+            this.renewDialog=false
+            this.$root.passInfo = {type: "resident"}
             this.$root.$router.push('/renew')
         },
         registerPass:function(){
+            this.$root.passInfo = {type: this.selectedItem ? "visitor" :"resident"}
             this.$root.$router.push('/register')
         },
         buildPass: function(pass){
@@ -121,10 +149,40 @@ const PassHome = Vue.component('pass-home', {
                     "Color": pass.vehicleColor[0].toUpperCase() + pass.vehicleColor.slice(1),
                     "Year" : pass.vehicleYear,
                     "License Plate" : pass.plateNum,
-                    "Expiration Date" : `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`
+                    "Expiration Date" : `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`
                 }
             }
             return null
+        },
+        findExpiration: function(){
+            if (this.residentPass){
+                let today = new Date()
+                let exp = new Date(this.residentPass.expiration)
+                exp.setDate(exp.getDate() -21)
+                return today > exp
+            }
+            return false
+        },
+        deletePass : async function(){
+            this.deleteDialog=false
+            await axios.delete(`/passes/${this.selectedItem ? 'visitor' : 'resident'}/${this.$root.residentID}`)
+            .then(res => console.log(res))
+            .catch(err => console.error(err))
+            this.activePass = null
+            this.selectedItem ? this.visitorPass=null : this.residentPass=null
+        },
+        getResidentPass: async function(){
+            await axios.get(`/passes/resident/${this.$root.residentID}`)
+            .then(res =>{
+                this.residentPass = res.data
+                this.activePass = this.buildPass(this.residentPass)
+            }).catch()
+        }, 
+        getVisitorPass: async function(){
+            await axios.get(`/passes/visitor/${this.$root.residentID}`)
+            .then(res =>{
+                this.visitorPass = res.data   
+            }).catch()
         }
     }
 })
