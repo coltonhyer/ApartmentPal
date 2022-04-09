@@ -74,7 +74,7 @@ const PassHome = Vue.component('pass-home', {
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-                <v-dialog width="50%" v-if=!selectedItem v-model=renewDialog>
+                <v-dialog width="50%" v-if=expiration v-model=renewDialog>
                     <template v-slot:activator="{ on }">
                         <div class="ml-1">
                             <v-btn color="success" v-on="on" > Renew </v-btn>
@@ -98,6 +98,7 @@ const PassHome = Vue.component('pass-home', {
     data: function(){
         return{
             selectedItem:0,
+            expiration: null,
             residentPass: null,
             visitorPass: null,
             activePass: null,
