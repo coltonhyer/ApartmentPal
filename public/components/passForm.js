@@ -80,6 +80,9 @@ const Form = Vue.component('pass-form',{
             expDate.setDate(expDate.getDate()-21)
             return today > expDate
         },
+        goToHome: function(){
             this.$refs.form.reset()
+            this.$root.$router.push('/resident')
+        }
     }
 })
