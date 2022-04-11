@@ -2,3 +2,6 @@ username:password
 chyer:password123
 mxmulls:sampl3passw0rd
 kjenson:easycyph3r
+dsmith:p@rking
+jburrow:g0b3ngal5
+mlong:l0g1npw
