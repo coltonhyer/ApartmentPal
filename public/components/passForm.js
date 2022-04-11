@@ -5,19 +5,19 @@ const Form = Vue.component('pass-form',{
         <v-app-bar app color="#6f5e5c">
             <v-app-bar-nav-icon @click="goToHome"><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
             <v-layout justify-center>
-                <v-toolbar-title class="text-h3" style="color:#c6caed"> Pass Registration</v-toolbar-title>
+                <v-toolbar-title  class="text-h3 pa-1" style="color:#c6caed"> Pass Registration</v-toolbar-title>
             </v-layout>
         </v-app-bar>
         <v-layout fill-height>
             <v-content>
                 <v-container>
                     <v-form ref="form">
-                        <v-text-field v-model="pass.make" label="Make" required></v-text-field>
-                        <v-text-field v-model="pass.model" label="Model" required></v-text-field>
-                        <v-text-field v-model="pass.color" label="Color" required></v-text-field>
-                        <v-text-field v-model="pass.year" label="Year" required></v-text-field>
-                        <v-text-field v-model="pass.licensePlate" label="License Plate" required></v-text-field>
-                        <v-select v-model="pass.expiration" label="Duration" :items=visitorExp v-if="passType == 'visitor'" required></v-select>
+                        <v-text-field :rules="passRules" v-model="pass.make" label="Make"></v-text-field>
+                        <v-text-field :rules="passRules" v-model="pass.model" label="Model"></v-text-field>
+                        <v-text-field :rules="passRules" v-model="pass.color" label="Color"></v-text-field>
+                        <v-text-field type="number" :rules="yearRules" v-model="pass.year" label="Year"></v-text-field>
+                        <v-text-field :rules="passRules" v-model="pass.licensePlate" label="License Plate"></v-text-field>
+                        <v-select :rules="passRules" v-model="pass.expiration" label="Duration" :items=visitorExp v-if="passType == 'visitor'"></v-select>
                         <v-btn color="success" @click="submit">Submit</v-btn>
                     </v-form>
                 </v-container>  
@@ -32,6 +32,16 @@ const Form = Vue.component('pass-form',{
                 {text: "2 days", value: 2},
                 {text: "3 days", value: 3},
             ],
+            passRules:[
+                v => !!v || 'Field Required'
+            ],
+            yearRules:[
+                v => !!v || 'Field Required',
+                v => {
+                    let currYear = new Date().getFullYear();
+                    return v <= currYear +1 || 'Please enter a valid year'
+                }
+            ],
             passType:null,
             pass:{}
         }
@@ -41,6 +51,8 @@ const Form = Vue.component('pass-form',{
     },
     methods:{
         submit: async function(){
+            this.$refs.form.validate()
+            if(!this.$refs.form.valid) return
             if (this.pass.expiration){
                 let date = new Date()
                 this.pass.expiration = date.setDate(date.getDate() + this.pass.expiration)
