@@ -3,7 +3,7 @@ const PassHome = Vue.component('pass-home', {
     `
     <div id="passHome" style="height:100%;">
         <v-app-bar app color="#6f5e5c">
-            <v-app-bar-nav-icon><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click="selectedItem=0"><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
             <v-layout justify-center>
                 <v-toolbar-title class="text-h3" style="color:#c6caed"> Resident Hub </v-toolbar-title>
             </v-layout>
@@ -177,6 +177,7 @@ const PassHome = Vue.component('pass-home', {
             .then(res =>{
                 this.residentPass = res.data
                 this.activePass = this.buildPass(this.residentPass)
+                this.expiration = this.findExpiration()
             }).catch()
         }, 
         getVisitorPass: async function(){
