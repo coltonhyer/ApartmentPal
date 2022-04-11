@@ -3,7 +3,7 @@ const Form = Vue.component('pass-form',{
     `
     <div class="passForm">
         <v-app-bar app color="#6f5e5c">
-            <v-app-bar-nav-icon><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon @click="goToHome"><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
             <v-layout justify-center>
                 <v-toolbar-title class="text-h3" style="color:#c6caed"> Pass Registration</v-toolbar-title>
             </v-layout>
@@ -80,5 +80,6 @@ const Form = Vue.component('pass-form',{
             expDate.setDate(expDate.getDate()-21)
             return today > expDate
         },
+            this.$refs.form.reset()
     }
 })
