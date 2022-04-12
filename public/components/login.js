@@ -37,7 +37,7 @@ const Login = Vue.component('login', {
         //TODO: potentially look into more secure way of transporting this info (especially the password)
         submit: async function(){
             this.$refs.form.resetValidation()
-            await axios.get(`/logins?username=${this.username}&password=${this.password}`).then((res) =>{
+            await axios.post(`/logins`, {username:this.username, password:this.password}).then((res) =>{
                 let user = res.data.user
                 let role = res.data.role
                 if (role==="resident"){
