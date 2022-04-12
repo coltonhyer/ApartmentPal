@@ -1,4 +1,6 @@
 const express = require('express')
+const fs = require('fs')
+const https = require('https')
 const mongoose = require('mongoose')
 const shajs  = require('sha.js')
 
@@ -35,23 +37,42 @@ pass = {
     residentID: mongoose.ObjectId
 }
 
-const server = app.listen(3000, async () => {
-    console.log('Server listening on port 3000')
-    //connect to the database, set up the schemas, and create the models
-    try{
-        let db = await mongoose.connect('mongodb+srv://DBUser:rsOe3zE37DzffIY5@cluster0.bepto.mongodb.net/Parking?retryWrites=true&w=majority')
-        let loginSchema = new db.Schema(login)
-        let residentSchema = new db.Schema(resident)
-        let passSchema = new db.Schema(pass)
-        loginModel = db.model('logins', loginSchema)
-        residentModel = db.model('residents', residentSchema)
-        passModel = db.model('passes', passSchema)
-        console.log('Successfully connected to the database')
-    }
-    catch(err){
-        console.error(`Failed to connect to database: `, err)
-    }
-})
+https
+    .createServer({key: fs.readFileSync('server.key'),cert: fs.readFileSync('server.cert')},app)
+    .listen(3000, async () =>{
+        console.log('Server listening on port 3000')
+        //connect to the database, set up the schemas, and create the models
+        try{
+            let db = await mongoose.connect('mongodb+srv://DBUser:rsOe3zE37DzffIY5@cluster0.bepto.mongodb.net/Parking?retryWrites=true&w=majority')
+            let loginSchema = new db.Schema(login)
+            let residentSchema = new db.Schema(resident)
+            let passSchema = new db.Schema(pass)
+            loginModel = db.model('logins', loginSchema)
+            residentModel = db.model('residents', residentSchema)
+            passModel = db.model('passes', passSchema)
+            console.log('Successfully connected to the database')
+        }
+        catch(err){
+            console.error(`Failed to connect to database: `, err)
+        }
+    })
+// const server = app.listen(3000, async () => {
+//     console.log('Server listening on port 3000')
+//     //connect to the database, set up the schemas, and create the models
+//     try{
+//         let db = await mongoose.connect('mongodb+srv://DBUser:rsOe3zE37DzffIY5@cluster0.bepto.mongodb.net/Parking?retryWrites=true&w=majority')
+//         let loginSchema = new db.Schema(login)
+//         let residentSchema = new db.Schema(resident)
+//         let passSchema = new db.Schema(pass)
+//         loginModel = db.model('logins', loginSchema)
+//         residentModel = db.model('residents', residentSchema)
+//         passModel = db.model('passes', passSchema)
+//         console.log('Successfully connected to the database')
+//     }
+//     catch(err){
+//         console.error(`Failed to connect to database: `, err)
+//     }
+// })
 
 
 app.use(logger('dev'))
