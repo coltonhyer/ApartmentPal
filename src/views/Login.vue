@@ -39,7 +39,7 @@ export default{
     methods:{
         submit: async function(){
             this.$refs.form.resetValidation()
-            await axios.get(`http://localhost:3000/logins?username=${this.username}&password=${this.password}`).then((res) =>{
+            await axios.post(`/logins`, {username:this.username, password:this.password}).then((res) =>{
                 let user = res.data.user
                 let role = res.data.role
                 if (role==="resident"){
