@@ -48,6 +48,7 @@ const PassHome = Vue.component('pass-home', {
                 </v-card>
             </v-container>
             <v-container v-else id="passHomeField">
+                <v-alert text outlined dense :type="expiration ? 'warning' : 'error'" v-if="expiration">Your pass expiration is almost up, please renew if you are planning on parking past the listed expiration date</v-alert>
                 <v-banner class="text-h5">
                     Pass Information
                 </v-banner>
