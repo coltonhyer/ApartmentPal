@@ -62,10 +62,10 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(express.urlencoded())
 
-app.get('/logins', async (req, res) => {
-    let pwHash = hash(req.query.password)
+app.post('/logins', async (req, res) => {
+    let pwHash = hash(req.body.password)
     try{
-        let login = await loginModel.findOne({username: req.query.username, password: pwHash})
+        let login = await loginModel.findOne({username: req.body.username, password: pwHash})
         if (login){
             let user = await residentModel.findOne({_id: ObjectId(login.residentID)})
             if (user){
