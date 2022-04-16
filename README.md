@@ -20,6 +20,11 @@ npm run build
 ```
 This compiles the project into `dist` which will be served up by `server.js` 
 
+Start the server by running:
+```
+npm run app
+```
+
 The sever then runs on port 3000 (in a local environment) and serves those files there, so you can view them by pointing your browser on that port
 
 ## Stack
