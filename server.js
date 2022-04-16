@@ -1,8 +1,10 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const shajs  = require('sha.js')
+const path = require('path')
 
 const logger = require('morgan'),
+    cors = require('cors')
     favicon = require('serve-favicon')
 const { ObjectId } = require('bson')
 
@@ -53,9 +55,9 @@ const server = app.listen(3000, async () => {
     }
 })
 
-
+app.use(cors())
 app.use(logger('dev'))
-app.use(express.static('public'))
+app.use(express.static('dist'))
 //app.use(favicon())
 app.use(express.json())
 app.use(express.urlencoded())

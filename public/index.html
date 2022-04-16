@@ -1,53 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
-    <title>Apartment Pal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.5.95/css/materialdesignicons.min.css" integrity="sha512-Zw6ER2h5+Zjtrej6afEKgS8G5kehmDAHYp9M2xf38MPmpUWX39VrYmdGtCrDQbdLQrTnBVT8/gcNhgS4XPgvEg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./styles/index.css" />
-</head>
-<body>
-    <div id="app">
-        <v-app>
-            <v-main>
-                <router-view></router-view>
-            </v-main>
-        </v-app>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.5.3/vue-router.min.js" integrity="sha512-/QcUyef9r0LQzC+WtTNs+gJNacB+x20p1ZaPKSldF9Vu3m+uOmz0bBpPpsmHncv1ehuOCwnMXYydvl1KkW7Xow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-    <script src= './components/login.js'></script>
-    <script src="./components/lookup.js"></script>
-    <script src="./components/passes.js"></script>
-    <script src="./components/passForm.js"></script>
-    <script>
-        const routes = [
-            {path: '/', component: Login},
-            {path: '/lookup',component:Lookup},
-            {path: '/results', component: Results},
-            {path: '/resident', component: PassHome},
-            {path:'/register', component: Form},
-            {path:'/renew', component:Form},
-        ]
-
-        const router = new VueRouter({
-            routes
-        })
-
-        let app = new Vue({
-            router, 
-            vuetify: new Vuetify(),
-            data: {
-                passInfo: null,
-                residentID: null,
-            }
-
-        }).$mount('#app')
-    </script>
-</body>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>

@@ -1,6 +1,4 @@
-const Form = Vue.component('pass-form',{
-    template:
-    `
+<template>
     <div class="passForm">
         <v-app-bar app color="#6f5e5c">
             <v-app-bar-nav-icon @click="goToHome"><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
@@ -24,7 +22,10 @@ const Form = Vue.component('pass-form',{
             </v-content>
         </v-layout>
     </div>
-    `, 
+</template>
+
+<script>
+export default {
     data: function(){
         return{
             visitorExp: [
@@ -97,4 +98,5 @@ const Form = Vue.component('pass-form',{
             this.$root.$router.push('/resident')
         }
     }
-})
+}
+</script>

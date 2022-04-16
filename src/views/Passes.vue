@@ -1,6 +1,4 @@
-const PassHome = Vue.component('pass-home', {
-    template:
-    `
+<template>
     <div id="passHome" style="height:100%;">
         <v-app-bar app color="#6f5e5c">
             <v-app-bar-nav-icon @click="selectedItem=0"><v-icon large color="#c6caed">mdi-home</v-icon></v-app-bar-nav-icon>
@@ -16,7 +14,7 @@ const PassHome = Vue.component('pass-home', {
                             Passes
                         </v-list-item-title>
                         <v-list-item-subtitle>
-                            For Colton Hyer
+                            For {{name.first}} {{name.last}}
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
@@ -53,7 +51,7 @@ const PassHome = Vue.component('pass-home', {
                     Pass Information
                 </v-banner>
                     <v-card>
-                        <v-card-text v-for="(item, value) in activePass">
+                        <v-card-text v-for="(item, value) in activePass" :key="item">
                             <strong>{{value}}: </strong>{{item}}
                         </v-card-text>
                     </v-card>
@@ -95,7 +93,11 @@ const PassHome = Vue.component('pass-home', {
             </v-layout>
         </v-footer>
     </div>
-    `,
+</template>
+
+<script>
+import axios from 'axios'
+export default {
     data: function(){
         return{
             selectedItem:0,
@@ -104,7 +106,8 @@ const PassHome = Vue.component('pass-home', {
             visitorPass: null,
             activePass: null,
             renewDialog: false,
-            deleteDialog: false
+            deleteDialog: false,
+            name:null
         }
     },
     watch:{
@@ -121,6 +124,7 @@ const PassHome = Vue.component('pass-home', {
     mounted: function(){
         this.getResidentPass()
         this.getVisitorPass()
+        this.getResidentName()
     },
     methods:{
         renewPass: async function(){
@@ -186,6 +190,17 @@ const PassHome = Vue.component('pass-home', {
             .then(res =>{
                 this.visitorPass = res.data   
             }).catch()
+        },
+        getResidentName: async function(){
+            await axios.get(`/resident/${this.$root.residentID}`)
+                .then(res =>{
+                    this.name = {
+                        first: res.data.firstName,
+                        last: res.data.lastName
+                    }
+                })
         }
     }
-})
+
+}
+</script>
