@@ -4,6 +4,6 @@ module.exports = defineConfig({
     'vuetify'
   ],
   devServer: {
-    proxy: 'http://localhost:3000'
+    proxy: `http://localhost:${process.env.PORT || 3000}`
   }
 })

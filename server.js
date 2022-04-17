@@ -37,7 +37,7 @@ pass = {
     residentID: mongoose.ObjectId
 }
 
-const server = app.listen(3000, async () => {
+const server = app.listen(process.env.PORT || 3000, async () => {
     console.log('Server listening on port 3000')
     //connect to the database, set up the schemas, and create the models
     try{
