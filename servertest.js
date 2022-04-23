@@ -1,6 +1,5 @@
 const axios = require('axios')
 
-
 async function userLogin(username, password){
     return await axios.get(`http://localhost:3000/logins?username=${username}&password=${password}`).then(res=>{return res.status}).catch((err)=>{return err.response.status})
 }

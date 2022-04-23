@@ -1,9 +1,10 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const shajs  = require('sha.js')
+const path = require('path')
 
 const logger = require('morgan'),
-    helmet = require('helmet'),
+    cors = require('cors')
     favicon = require('serve-favicon')
 const { ObjectId } = require('bson')
 
@@ -14,7 +15,7 @@ let loginModel, residentModel, passModel
 let login = {
     username: String,
     password: String,
-    rold: String,
+    role: String,
     residentID:mongoose.ObjectId
 },
 resident = {
@@ -36,7 +37,7 @@ pass = {
     residentID: mongoose.ObjectId
 }
 
-const server = app.listen(3000, async () => {
+const server = app.listen(process.env.PORT || 3000, async () => {
     console.log('Server listening on port 3000')
     //connect to the database, set up the schemas, and create the models
     try{
@@ -52,34 +53,32 @@ const server = app.listen(3000, async () => {
     catch(err){
         console.error(`Failed to connect to database: `, err)
     }
-
 })
 
-app.use(helmet({
-    crossOriginEmbedderPolicy: true,
-    crossOriginOpenerPolicy: true,
-    crossOriginResourcePolicy: true,
-    originAgentCluster: true,
-    contentSecurityPolicy: true
-}))
+app.use(cors())
 app.use(logger('dev'))
-//app.use(express.static('public'))
+app.use(express.static('dist'))
+
 //app.use(favicon())
 app.use(express.json())
 app.use(express.urlencoded())
 
-app.get('/logins', async (req, res) => {
-    let pwHash = hash(req.query.password)
+app.post('/logins', async (req, res) => {
+    let pwHash = hash(req.body.password)
     try{
-        let login = await loginModel.findOne({username: req.query.username, password: pwHash})
+        let login = await loginModel.findOne({username: req.body.username, password: pwHash})
         if (login){
-            testID = login.residentID
-            let user = await residentModel.findOne({residentID: login.residentID})
+            let user = await residentModel.findOne({_id: ObjectId(login.residentID)})
             if (user){
-                res.status(200).send(user)
+                res.status(200).send({role:login.role, user})
             }
             else{
-                res.status(500).send('User not found')
+                if (login.role === 'admin'){
+                    res.status(200).send({role:login.role})
+                }
+                else{
+                    res.status(500).send('resident info not found')
+                }
             }
         }
         else{
@@ -105,6 +104,22 @@ app.get('/passes', async (req, res) =>{
     }
     catch(err){
         console.log('Error in getting passes: ')
+        console.error(err)
+    }
+})
+
+app.get('/resident/:id', async(req, res) =>{
+    try{
+        let resident = await residentModel.findOne({_id: ObjectId(req.params.id)})
+        if (resident){
+            res.status(200).send(resident)
+        }
+        else{
+            res.status(404).send('Resident not found')
+        }
+    }
+    catch(err){
+        console.log('Error in getting resident: ')
         console.error(err)
     }
 })
@@ -144,7 +159,8 @@ app.put('/passes/resident/:id',async (req, res) => {
     try{
         let pass = await passModel.findOne({residentID: ObjectId(req.params.id), passType: 'resident'})
         if (pass){
-            let updatedPass = await passModel.findOneAndUpdate({residentID: ObjectId(req.params.id), passType: 'resident'}, cleanPass(req.body))
+
+            let updatedPass = await passModel.findOneAndUpdate({residentID: ObjectId(req.params.id), passType: 'resident'}, req.body)
             res.status(200).send(updatedPass)
         }
         else{
