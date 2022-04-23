@@ -46,7 +46,8 @@
                 </v-card>
             </v-container>
             <v-container v-else id="passHomeField">
-                <v-alert text outlined dense :type="expiration ? 'warning' : 'error'" v-if="expiration">Your pass expiration is almost up, please renew if you are planning on parking past the listed expiration date</v-alert>
+                <v-alert text outlined dense :type="'warning'" v-if="expiring && !expired && !selectedItem">Your pass expiration is almost up, please renew by clicking the button below if you are planning on parking past {{activePass["Expiration Date"]}}</v-alert>
+                <v-alert text outlined dense :type="'error'" v-if="expired">Pass expired on {{activePass["Expiration Date"]}}. Please renew your pass or delete it and register a new pass to avoid a fine if you plan to continue parking on the premises.</v-alert>
                 <v-banner class="text-h5">
                     Pass Information
                 </v-banner>
@@ -73,7 +74,7 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-                <v-dialog width="50%" v-if=expiration v-model=renewDialog>
+                <v-dialog width="50%" v-if="expiring && !selectedItem" v-model=renewDialog>
                     <template v-slot:activator="{ on }">
                         <div class="ml-1">
                             <v-btn color="success" v-on="on" > Renew </v-btn>
@@ -101,7 +102,8 @@ export default {
     data: function(){
         return{
             selectedItem:0,
-            expiration: null,
+            expiring: null,
+            expired: null,
             residentPass: null,
             visitorPass: null,
             activePass: null,
@@ -112,13 +114,17 @@ export default {
     },
     watch:{
         selectedItem: function(val){
+            let expDate
             if (val){
                 this.activePass = this.buildPass(this.visitorPass)
+                expDate = this.visitorPass.expiration
             }
             else{
                 this.activePass = this.buildPass(this.residentPass)
-                this.expiration = this.findExpiration()
+                this.expiring = this.findExpiration()
+                expDate = this.residentPass.expiration
             }
+            this.expired = new Date() > new Date(expDate)
         }
     },
     mounted: function(){
@@ -182,7 +188,8 @@ export default {
             .then(res =>{
                 this.residentPass = res.data
                 this.activePass = this.buildPass(this.residentPass)
-                this.expiration = this.findExpiration()
+                this.expiring = this.findExpiration()
+                this.expired = new Date() > new Date(this.residentPass.expiration)
             }).catch()
         }, 
         getVisitorPass: async function(){

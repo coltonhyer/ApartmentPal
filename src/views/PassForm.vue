@@ -18,13 +18,14 @@
                         <v-select :rules="passRules" v-model="pass.expiration" label="Duration" :items=visitorExp v-if="passType == 'visitor'"></v-select>
                         <v-btn color="success" @click="submit">Submit</v-btn>
                     </v-form>
-                </v-container>  
+                </v-container>
             </v-content>
         </v-layout>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     data: function(){
         return{
@@ -52,8 +53,7 @@ export default {
     },
     methods:{
         submit: async function(){
-            this.$refs.form.validate()
-            if(!this.$refs.form.valid) return
+            if(!this.$refs.form.validate()) return
             if (this.pass.expiration){
                 let date = new Date()
                 this.pass.expiration = date.setDate(date.getDate() + this.pass.expiration)
