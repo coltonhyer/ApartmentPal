@@ -9,6 +9,7 @@
     "test": "jest",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
+
   },
   "repository": {
     "type": "git",

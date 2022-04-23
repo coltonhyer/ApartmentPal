@@ -58,6 +58,7 @@ const server = app.listen(process.env.PORT || 3000, async () => {
 app.use(cors())
 app.use(logger('dev'))
 app.use(express.static('dist'))
+
 //app.use(favicon())
 app.use(express.json())
 app.use(express.urlencoded())
@@ -158,6 +159,7 @@ app.put('/passes/resident/:id',async (req, res) => {
     try{
         let pass = await passModel.findOne({residentID: ObjectId(req.params.id), passType: 'resident'})
         if (pass){
+
             let updatedPass = await passModel.findOneAndUpdate({residentID: ObjectId(req.params.id), passType: 'resident'}, req.body)
             res.status(200).send(updatedPass)
         }
