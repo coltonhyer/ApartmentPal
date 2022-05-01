@@ -6,7 +6,7 @@
                 <v-toolbar-title class="text-h3" style="color:#c6caed"> Resident Hub </v-toolbar-title>
             </v-layout>
         </v-app-bar>
-        <v-layout fill-height wrap>
+        <v-layout fill-height>
             <v-navigation-drawer color="#4a5240" dark>
                 <v-list-item>
                     <v-list-item-content>
@@ -74,7 +74,7 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-                <v-dialog width="50%" v-if="expiring && !selectedItem" v-model=renewDialog>
+                <v-dialog width="50%" max-width="791.111px" v-if="expiring && !selectedItem" v-model=renewDialog>
                     <template v-slot:activator="{ on }">
                         <div class="ml-1">
                             <v-btn color="success" v-on="on" > Renew </v-btn>
@@ -114,17 +114,7 @@ export default {
     },
     watch:{
         selectedItem: function(val){
-            let expDate
-            if (val){
-                this.activePass = this.buildPass(this.visitorPass)
-                expDate = this.visitorPass.expiration
-            }
-            else{
-                this.activePass = this.buildPass(this.residentPass)
-                this.expiring = this.findExpiration()
-                expDate = this.residentPass.expiration
-            }
-            this.expired = new Date() > new Date(expDate)
+            this.getExpirationDate(val)
         }
     },
     mounted: function(){
@@ -141,7 +131,8 @@ export default {
             newExp.setMonth(6)
             await axios.put(`/passes/resident/${this.$root.residentID}`, {expiration: newExp}).then(res => console.log(res)).catch(err => console.error(err))
             this.residentPass = await axios.get(`/passes/resident/${this.$root.residentID}`).then(res => res.data).catch(err => console.error(err))
-            this.activePass = this.buildPass(this.residentPass) 
+            this.activePass = this.buildPass(this.residentPass)
+            this.getExpirationDate(this.selectedItem)
         },
         goToForm: function(){
             this.renewDialog=false
@@ -206,6 +197,19 @@ export default {
                         last: res.data.lastName
                     }
                 })
+        },
+        getExpirationDate: function(val){
+            let expDate
+            if (val){
+                this.activePass = this.buildPass(this.visitorPass)
+                expDate = this.visitorPass.expiration
+            }
+            else{
+                this.activePass = this.buildPass(this.residentPass)
+                this.expiring = this.findExpiration()
+                expDate = this.residentPass.expiration
+            }
+            this.expired = new Date() > new Date(expDate)
         }
     }
 
