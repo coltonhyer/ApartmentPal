@@ -7,13 +7,13 @@
             <div> Please login to use our parking services... </div>
         </v-container>
         <v-container id="loginContainer">
-            <!-- <v-card class="pa-5"> -->
+            <v-card class="pa-5">
                 <v-form ref="form" id="loginForm">
                     <v-text-field @blur="reset" @input="reset" @keyup.enter="submit" v-model="username" :rules=unRules label="Username" :prepend-icon="'mdi-account'" required></v-text-field>
                     <v-text-field @blur="reset" @input="reset" @keyup.enter="submit" v-model="password" :rules=pwRules label="Password" class="shrink" :prepend-icon="'mdi-lock'" :type="show1 ? 'text': 'password'" :append-icon="show1 ? 'mdi-eye': 'mdi-eye-off'" @click:append="show1=!show1" required></v-text-field>
                     <v-btn color="primary" @click="submit">Accept</v-btn>
                 </v-form>
-            <!-- </v-card> -->
+            </v-card>
         </v-container>
     </div>
 </template>
@@ -69,7 +69,7 @@ export default{
 <style>
     .login{
         height:100%;
-        /*background-image: linear-gradient(#ADA8BE 60%, #7c7979);*/
+        background-image: linear-gradient(#ADA8BE 60%, #7c7979);
     }
 
     #welcome{
@@ -111,6 +111,5 @@ export default{
         flex-direction:column;
         bottom:75px;
         justify-content:center;
-        
     }
 </style>
