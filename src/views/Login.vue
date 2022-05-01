@@ -9,8 +9,8 @@
         <v-container id="loginContainer">
             <!-- <v-card class="pa-5"> -->
                 <v-form ref="form" id="loginForm">
-                    <v-text-field @blur="reset" @input="reset" v-model="username" :rules=unRules label="Username" :prepend-icon="'mdi-account'" required></v-text-field>
-                    <v-text-field @blur="reset" @input="reset" v-model="password" :rules=pwRules label="Password" class="shrink" :prepend-icon="'mdi-lock'" :type="show1 ? 'text': 'password'" :append-icon="show1 ? 'mdi-eye': 'mdi-eye-off'" @click:append="show1=!show1" required></v-text-field>
+                    <v-text-field @blur="reset" @input="reset" @keyup.enter="submit" v-model="username" :rules=unRules label="Username" :prepend-icon="'mdi-account'" required></v-text-field>
+                    <v-text-field @blur="reset" @input="reset" @keyup.enter="submit" v-model="password" :rules=pwRules label="Password" class="shrink" :prepend-icon="'mdi-lock'" :type="show1 ? 'text': 'password'" :append-icon="show1 ? 'mdi-eye': 'mdi-eye-off'" @click:append="show1=!show1" required></v-text-field>
                     <v-btn color="primary" @click="submit">Accept</v-btn>
                 </v-form>
             <!-- </v-card> -->
